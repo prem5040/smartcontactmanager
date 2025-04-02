@@ -1,16 +1,104 @@
 package com.scm.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.scm.entities.Contact;
+import com.scm.entities.User;
+import com.scm.forms.ContactForm;
+import com.scm.helpers.Helper;
+import com.scm.helpers.Message;
+import com.scm.helpers.MessageType;
+import com.scm.services.ContactService;
+import com.scm.services.UserService;
+
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+
 
 @Controller
 @RequestMapping("/user/contacts")
 public class ContactController {
 
+    @Autowired
+    private ContactService contactService;
+
+    @Autowired
+    private UserService userService;
+
+
+
     @RequestMapping("/add")
     // add contact page: handler
-    public String addContactView() {
+    public String addContactView(Model model) {
+        ContactForm contactForm =new ContactForm();
+        contactForm.setName("Prem Kumar Yadav");
+        contactForm.setFavorite(true);
+        
+        model.addAttribute("contactForm",contactForm);
+
         return "user/add_contact";
+    }
+    
+    //Handling the data that will be recieved from submitting the form
+
+    @RequestMapping(value="/add", method=RequestMethod.POST)
+    public String saveContact(@Valid @ModelAttribute ContactForm contactForm, BindingResult result , 
+    Authentication authentication, HttpSession session){
+        //Processing form data
+
+        
+        
+        // 1. Validating form
+
+        if(result.hasErrors())
+        {
+            session.setAttribute("message", Message.builder()
+            .content("Correct Following Errors")
+            .type(MessageType.red)
+            .build());
+            return "user/add_contact";
+        }
+
+        
+        
+        String username =Helper.getEmailOfLoggedInUser(authentication);
+        //form-> contact
+        User user = userService.getUserByEmail(username);
+
+        // Process contact Picture 
+        
+        Contact contact =new Contact();
+        contact.setName(contactForm.getName());
+        contact.setFavorite(contactForm.isFavorite());
+        contact.setEmail(contactForm.getEmail());
+        contact.setPhoneNumber(contactForm.getPhoneNumber());
+        contact.setAddress(contactForm.getAddress());
+        contact.setDescription(contactForm.getDescription());
+        contact.setUser(user);
+        contact.setLinkedInLink(contactForm.getLinkedInLink());
+        contact.setWebsiteLink(contactForm.getWebsiteLink());
+
+        // 2. save to database
+        contactService.save(contact);
+        
+        System.out.println(contactForm);
+
+        // 3. Set the contact picture url
+
+        // 4. Set the message for displayed view
+        session.setAttribute("message", Message.builder()
+            .content("New Contact Successfully Added.")
+            .type(MessageType.green)
+            .build());
+
+        return "redirect:/user/contacts/add";
     }
 
 }
