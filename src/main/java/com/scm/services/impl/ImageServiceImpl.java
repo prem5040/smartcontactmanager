@@ -1,7 +1,6 @@
 package com.scm.services.impl;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,9 +22,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public String uploadImage(MultipartFile contactImage) {
-
-        String filename=UUID.randomUUID().toString();
+    public String uploadImage(MultipartFile contactImage, String filename) {
 
         // This will help to upload the file to cloud and returns its url link.
         try {

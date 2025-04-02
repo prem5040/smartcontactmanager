@@ -36,6 +36,9 @@ public class Contact {
     private String linkedInLink;
     // private List<String> socialLinks=new ArrayList<>();
 
+    // For future in case we want to make different type of url
+    private String cloudinaryImagePublicId; 
+
     @ManyToOne
     private User user;
 
