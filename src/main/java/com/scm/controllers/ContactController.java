@@ -1,5 +1,7 @@
 package com.scm.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,7 @@ import com.scm.helpers.Helper;
 import com.scm.helpers.Message;
 import com.scm.helpers.MessageType;
 import com.scm.services.ContactService;
+import com.scm.services.ImageService;
 import com.scm.services.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -26,11 +29,16 @@ import jakarta.validation.Valid;
 @RequestMapping("/user/contacts")
 public class ContactController {
 
+    private Logger logger = LoggerFactory.getLogger(ContactController.class);
+
     @Autowired
     private ContactService contactService;
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ImageService imageService;
 
 
 
@@ -59,6 +67,9 @@ public class ContactController {
 
         if(result.hasErrors())
         {
+            // To list all the errors while submitting a form (for reference)
+            // result.getAllErrors().forEach(error->logger.info(error.toString()));
+
             session.setAttribute("message", Message.builder()
             .content("Correct Following Errors")
             .type(MessageType.red)
@@ -73,6 +84,11 @@ public class ContactController {
         User user = userService.getUserByEmail(username);
 
         // Process contact Picture 
+
+        // Processing/ Uploading Image
+        String fileURL= imageService.uploadImage(contactForm.getContactImage());
+
+        // logger.info("File Info : {}", contactForm.getContactImage().getOriginalFilename());
         
         Contact contact =new Contact();
         contact.setName(contactForm.getName());
@@ -84,10 +100,10 @@ public class ContactController {
         contact.setUser(user);
         contact.setLinkedInLink(contactForm.getLinkedInLink());
         contact.setWebsiteLink(contactForm.getWebsiteLink());
+        contact.setPicture(fileURL);
 
         // 2. save to database
         contactService.save(contact);
-        
         System.out.println(contactForm);
 
         // 3. Set the contact picture url
