@@ -13,7 +13,7 @@ public class AppConstants {
     public static final String CONTACT_IMAGE_CROP = "fill";
 
     //Page size for pagination
-    public static final int PAGE_SIZE = 10;
+    public static final int PAGE_SIZE = 3;
 
     
 

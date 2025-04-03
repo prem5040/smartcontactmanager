@@ -25,7 +25,9 @@ public interface ContactService {
     void delete(String id);
 
     //Search Contact
-    List<Contact> search(String name, String email, String phoneNumber);
+    Page<Contact> searchByName(String nameKeyword, int size, int page, String sortBy, String order, User user);
+    Page<Contact> searchByEmail(String emailKeyword, int size, int page, String sortBy, String order, User user);
+    Page<Contact> searchByPhoneNumber(String phoneKeyword, int size, int page, String sortBy, String order, User user);
 
     //get contact by Userid
     List<Contact> getByUserId(String userId);
