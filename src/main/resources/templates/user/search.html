@@ -158,9 +158,9 @@
                       <a href="">
                         <i class="fa-solid w-6 h-6 fa-pen"></i>
                       </a>
-                      <a href="">
-                        <i class="fa-solid w-6 h-6 fa-eye"></i>
-                      </a>
+                      <button th:onclick="loadContactdata([[${c.id}]])">
+                        <i class="fa-solid fa-eye"></i>
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -206,7 +206,7 @@
             </div>
             <!-- End of Pagination -->
             <h2
-              class="text text-5xl text-center bg-white p-4"
+              class="text text-5xl text-center dark:bg-gray-800 dark:text-white bg-white p-4"
               data-th-if="${pageContact.totalElements<=0}"
             >
               No Results Found
@@ -216,6 +216,7 @@
       </div>
     </div>
 
+    <script data-th-src="@{'/js/contact_modal.js'}"></script>
     <script>
       console.log("this is profile page");
     </script>
