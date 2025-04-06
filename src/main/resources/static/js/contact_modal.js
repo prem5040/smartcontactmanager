@@ -1,5 +1,6 @@
 console.log("contact_modal.js loaded");
-const baseURL = "http://localhost:8081";
+const baseURL = "http://localhost:8081"; //For Local
+// const baseURL = "http://scm20.ap-south-1.elasticbeanstalk"; //For AWS
 const viewContactModal = document.getElementById("view_contact_modal");
 
 // options with default values
